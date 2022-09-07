@@ -1,5 +1,6 @@
 package restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,12 +8,15 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
+import restaurantvoting.HasId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
@@ -23,7 +27,10 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class User extends BaseEntity implements HasId, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -31,12 +38,14 @@ public class User extends BaseEntity {
     @Size(max = 128)
     private String email;
 
-    @Column(name = "first_name")
-    @Size(max = 128)
+    @Column(name = "first_name", nullable = false)
+    @Size(min = 2, max = 128)
+    @NotBlank
     private String firstName;
 
-    @Column(name = "last_name")
-    @Size(max = 128)
+    @Column(name = "last_name", nullable = false)
+    @Size(min = 2, max = 128)
+    @NotBlank
     private String lastName;
 
     @Column(name = "password", nullable = false)
@@ -63,6 +72,7 @@ public class User extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OrderBy("voted DESC")
+    @JsonManagedReference(value = "user-votes") // https://stackoverflow.com/a/20271621/2161414
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
     private Set<Voting> votes;
 

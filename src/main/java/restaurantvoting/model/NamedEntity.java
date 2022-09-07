@@ -1,6 +1,8 @@
 package restaurantvoting.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -11,15 +13,13 @@ import javax.validation.constraints.Size;
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class NamedEntity extends BaseEntity {
 
     @NotBlank
     @Size(min = 2, max = 128)
     @Column(name = "name", nullable = false)
     protected String name;
-
-    protected NamedEntity() {
-    }
 
     protected NamedEntity(Integer id, String name) {
         super(id);

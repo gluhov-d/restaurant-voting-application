@@ -2,8 +2,10 @@ package restaurantvoting.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
+import restaurantvoting.error.DataConflictException;
 import restaurantvoting.model.Dish;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +15,17 @@ public interface DishRepository extends BaseRepository<Dish> {
     @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurantId ORDER BY d.localDate DESC")
     List<Dish> getAll(int restaurantId);
 
-    @Query("SELECT d FROM Dish d WHERE d.id = :id and d.restaurant.id = :restaurantId")
+    @Query("SELECT d FROM Dish d WHERE d.id = :id AND d.restaurant.id = :restaurantId")
     Optional<Dish> get(int id, int restaurantId);
 
-    @Query("SELECT d FROM Dish d JOIN FETCH d.restaurant WHERE d.id = :id and d.restaurant.id = :restaurantId")
-    Optional<Dish> getWithRestaurants(int id, int restaurantId);
+    @Query("SELECT d FROM Dish d JOIN FETCH d.restaurant WHERE d.id = :id AND d.restaurant.id = :restaurantId")
+    Optional<Dish> getWithRestaurant(int id, int restaurantId);
+
+    @Query("SELECT d FROM Dish d WHERE d.restaurant.id = :restaurantId AND d.localDate >= :startDate AND d.localDate < :endDate ORDER BY d.localDate DESC")
+    List<Dish> getBetweenHalfOpen(LocalDate startDate, LocalDate endDate, int restaurantId);
+
+    default Dish checkBelong(int id, int restaurantId) {
+        return get(id, restaurantId).orElseThrow(
+                () -> new DataConflictException("Dish id=" + id + " doesn't belong to restaurant id=" + restaurantId));
+    }
 }

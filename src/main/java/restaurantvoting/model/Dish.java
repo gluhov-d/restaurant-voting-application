@@ -1,10 +1,11 @@
 package restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -17,17 +18,20 @@ public class Dish extends NamedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
+    // https://stackoverflow.com/a/20271621/2161414
+    @JsonBackReference(value = "restaurant-dishes")
     private Restaurant restaurant;
 
-    @Column(name = "price")
-    @Size(min = 1)
-    private Integer price;
+    @Column(name = "price", nullable = false)
+    @Min(value = 1)
+    @NotNull
+    private int price;
 
     @Column(name = "local_date", nullable = false)
     @NotNull
     private LocalDate localDate;
 
-    public Dish(Integer id, LocalDate localDate, String name, Integer price) {
+    public Dish(Integer id, String name, LocalDate localDate, int price) {
         super(id, name);
         this.price = price;
         this.localDate = localDate;

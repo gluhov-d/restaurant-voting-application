@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import static restaurantvoting.util.validation.ValidationUtil.checkModification;
+
 // https://stackoverflow.com/questions/42781264/multiple-base-repositories-in-spring-data-jpa
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Integer> {
@@ -15,4 +17,8 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
     @Modifying
     @Query("DELETE FROM #{#entityName} u WHERE u.id=:id")
     int delete(int id);
+
+    default void deleteExisted(int id) {
+        checkModification(delete(id), id);
+    }
 }

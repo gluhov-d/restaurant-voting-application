@@ -1,5 +1,6 @@
 package restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,12 @@ public class Voting extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "user-votes") // https://stackoverflow.com/a/20271621/2161414
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @JsonBackReference(value = "restaurant-votes") // https://stackoverflow.com/a/20271621/2161414
     private Restaurant restaurant;
 
     @Column(name = "voted", nullable = false, columnDefinition = "timestamp default now()")
