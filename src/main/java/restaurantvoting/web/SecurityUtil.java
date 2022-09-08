@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import restaurantvoting.model.User;
+import restaurantvoting.to.UserTo;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,11 +24,11 @@ public class SecurityUtil {
         return requireNonNull(safeGet(), "No authorized user found");
     }
 
-    public static User authUser() {
-        return get().getUser();
+    public static UserTo authUser() {
+        return get().getUserTo();
     }
 
     public static int authId() {
-        return get().getUser().id();
+        return get().getUserTo().id();
     }
 }

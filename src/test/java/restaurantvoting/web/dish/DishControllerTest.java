@@ -3,6 +3,7 @@ package restaurantvoting.web.dish;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static restaurantvoting.web.dish.DishTestData.*;
+import static restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
+import static restaurantvoting.web.user.UserTestData.USER_MAIL;
 
 class DishControllerTest extends AbstractControllerTest {
     private static final String REST_URL = DishController.REST_URL + "/" + MIRAZUR_RESTAURANT_ID + "/dishes/";
@@ -26,6 +29,7 @@ class DishControllerTest extends AbstractControllerTest {
     private DishRepository repository;
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + DISH_ID))
                 .andExpect(status().isOk())
@@ -35,6 +39,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
     void getNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + DISH_NOT_FOUND_ID))
                 .andDo(print())
@@ -42,6 +47,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + DISH_ID))
                 .andExpect(status().isNoContent());
@@ -49,12 +55,14 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void deleteDataConflict() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + NOMA_DISH_ID))
                 .andExpect(status().isConflict());
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
         Dish updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + DISH_ID)
@@ -66,6 +74,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
         Dish newDish = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -80,6 +89,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
@@ -89,6 +99,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void createInvalid() throws Exception {
         Dish invalid = new Dish(null, "Invalid", null, 30000);
         perform(MockMvcRequestBuilders.post(REST_URL)
@@ -99,6 +110,7 @@ class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void updateInvalid() throws Exception {
         Dish invalid = new Dish(DISH_ID, null, null, 5000);
         perform(MockMvcRequestBuilders.put(REST_URL + DISH_ID)
@@ -110,8 +122,9 @@ class DishControllerTest extends AbstractControllerTest {
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
     void updateDuplicate() {
-        Dish invalid = new Dish(DISH_ID, "Invalid", mirazurDish2.getLocalDate(), 100);
+        Dish invalid = new Dish(DISH_ID, "Beef", mirazurDish2.getLocalDate(), 100);
         assertThrows(Exception.class, () ->
                 perform(MockMvcRequestBuilders.put(REST_URL + DISH_ID)
                         .contentType(MediaType.APPLICATION_JSON)

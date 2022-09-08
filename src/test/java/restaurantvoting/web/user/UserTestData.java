@@ -2,6 +2,8 @@ package restaurantvoting.web.user;
 
 import restaurantvoting.model.Role;
 import restaurantvoting.model.User;
+import restaurantvoting.to.UserTo;
+import restaurantvoting.util.JsonUtil;
 import restaurantvoting.web.MatcherFactory;
 
 import java.util.Collections;
@@ -12,12 +14,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static restaurantvoting.web.voting.VotingTestData.adminVoting;
 
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "votes");
+    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "votes", "password");
+    public static final MatcherFactory.Matcher<UserTo> USER_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(UserTo.class, "voted", "password");
     public static final MatcherFactory.Matcher<User> USER_WITH_VOTES_MATCHER =
             MatcherFactory.usingAssertions(User.class,
                     //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "votes.restaurant", "votes.voted", "votes.user").isEqualTo(e),
+                            .ignoringFields("registered", "votes.restaurant", "votes.dateTime", "votes.user", "password").isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
                     });
@@ -41,5 +44,9 @@ public class UserTestData {
 
     public static User getUpdated() {
         return new User(USER_ID, "UpdatedFirstName", "UpdatedLastName", USER_MAIL, "updatedPass", false, new Date(), List.of(Role.ADMIN));
+    }
+
+    public static String jsonWithPassword(User user, String password) {
+        return JsonUtil.writeAdditionProps(user, "password", password);
     }
 }

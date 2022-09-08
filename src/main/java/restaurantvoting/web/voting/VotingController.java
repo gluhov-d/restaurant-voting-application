@@ -30,7 +30,7 @@ public class VotingController {
     @GetMapping("/{restaurantId}/votes/{id}")
     public ResponseEntity<Voting> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId, @PathVariable int id) {
         log.info("get restaurant {} vote {} for user {}", restaurantId, id, authUser.id());
-        return ResponseEntity.of(repository.findById(id));
+        return ResponseEntity.of(repository.get(id, authUser.id()));
     }
 
     @PutMapping(value = "/{restaurantId}/votes/{id}")

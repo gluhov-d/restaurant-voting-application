@@ -26,10 +26,10 @@ public class DishTestData {
     public static final List<Dish> dishes = List.of(mirazurDish1, mirazurDish2, mirazurDish3);
 
     public static Dish getNew() {
-        return new Dish(null, "Созданный Steak", of(2022, Month.AUGUST, 25), 45000);
+        return new Dish(null, "New Steak", of(2022, Month.AUGUST, 25), 45000);
     }
 
     public static Dish getUpdated() {
-        return new Dish(DISH_ID, "Обновленный Goose", mirazurDish1.getLocalDate().plusDays(1), 30000);
+        return new Dish(DISH_ID, "Updated Goose", mirazurDish1.getLocalDate().plusDays(1), 30000);
     }
 }

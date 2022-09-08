@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurantvoting.model.User;
+import restaurantvoting.repository.UserRepository;
+import restaurantvoting.to.UserTo;
 import restaurantvoting.util.UserUtil;
 import restaurantvoting.web.AuthUser;
 
@@ -26,8 +28,8 @@ public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
     @GetMapping
-    public User get(@AuthenticationPrincipal AuthUser authUser) {
-        return authUser.getUser();
+    public UserTo get(@AuthenticationPrincipal AuthUser authUser) {
+        return authUser.getUserTo();
     }
 
     @DeleteMapping()
@@ -38,10 +40,10 @@ public class ProfileController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        log.info("register user {}", user);
-        checkNew(user);
-        User created = prepareAndSave(UserUtil.prepareToSave(user));
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
+        log.info("register user {}", userTo);
+        checkNew(userTo);
+        User created = prepareAndSave(UserUtil.createNewFromTo(userTo));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -50,9 +52,10 @@ public class ProfileController extends AbstractUserController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody User user) {
-        assureIdConsistent(user, authUser.id());
-        prepareAndSave(user);
+    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody UserTo userTo) {
+        assureIdConsistent(userTo, authUser.id());
+        User user = repository.getById(authUser.id());
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
 
     @GetMapping("/with-votes")

@@ -75,7 +75,7 @@ public class User extends BaseEntity implements HasIdAndEmail, Serializable {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("voted DESC")
+    @OrderBy("dateTime DESC")
     @JsonManagedReference(value = "user-votes") // https://stackoverflow.com/a/20271621/2161414
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
     private Set<Voting> votes;

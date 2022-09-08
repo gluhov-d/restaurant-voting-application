@@ -5,13 +5,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "voting", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "voted"}, name = "voting_unique_user_voted_idx")})
+@Table(name = "voting", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "voting_unique_user_datetime_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,18 +28,19 @@ public class Voting extends BaseEntity {
     @JsonBackReference(value = "restaurant-votes") // https://stackoverflow.com/a/20271621/2161414
     private Restaurant restaurant;
 
-    @Column(name = "voted", nullable = false, columnDefinition = "timestamp default now()")
+    // https://stackoverflow.com/a/58771441/2161414
+    @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @NotNull
-    private Date voted = new Date();
+    private LocalDateTime dateTime;
 
     public Voting(Integer id, User user, Restaurant restaurant) {
-        this(id, user, restaurant, new Date());
+        this(id, user, restaurant, LocalDateTime.now());
     }
 
-    public Voting(Integer id, User user, Restaurant restaurant, Date voted) {
+    public Voting(Integer id, User user, Restaurant restaurant, LocalDateTime dateTime) {
         super(id);
         this.user = user;
         this.restaurant = restaurant;
-        this.voted = voted;
+        this.dateTime = dateTime;
     }
 }

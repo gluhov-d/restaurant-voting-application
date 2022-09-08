@@ -38,10 +38,10 @@ public class RestaurantTestData {
     }
 
     public static Restaurant getNew() {
-        return new Restaurant(null, "Созданный ресторан");
+        return new Restaurant(null, "New Restaurant");
     }
 
     public static Restaurant getUpdated() {
-        return new Restaurant(MIRAZUR_RESTAURANT_ID, "Обновленный Mirazur");
+        return new Restaurant(MIRAZUR_RESTAURANT_ID, "Updated Restaurant");
     }
 }
