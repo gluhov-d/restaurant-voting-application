@@ -4,11 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurantvoting.model.User;
 import restaurantvoting.util.UserUtil;
+import restaurantvoting.web.AuthUser;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -23,15 +25,15 @@ import static restaurantvoting.web.user.ProfileController.REST_URL;
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<User> get(@PathVariable int id) {
-        return super.get(id);
+    @GetMapping
+    public User get(@AuthenticationPrincipal AuthUser authUser) {
+        return authUser.getUser();
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
+    public void delete(@AuthenticationPrincipal AuthUser authUser) {
+        super.delete(authUser.id());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -45,16 +47,16 @@ public class ProfileController extends AbstractUserController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void update(@Valid @RequestBody User user, @PathVariable int id) {
-        assureIdConsistent(user, id);
+    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody User user) {
+        assureIdConsistent(user, authUser.id());
         prepareAndSave(user);
     }
 
-    @GetMapping("/{id}/with-votes")
-    public ResponseEntity<User> getWithVotes(@PathVariable int id) {
-        return super.getWithVotes(id);
+    @GetMapping("/with-votes")
+    public ResponseEntity<User> getWithVotes(@AuthenticationPrincipal AuthUser authUser) {
+        return super.getWithVotes(authUser.id());
     }
 }

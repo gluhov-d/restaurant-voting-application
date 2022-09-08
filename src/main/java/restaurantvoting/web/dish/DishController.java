@@ -18,6 +18,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static restaurantvoting.util.DateTimeUtil.dayOrMax;
+import static restaurantvoting.util.DateTimeUtil.dayOrMin;
 import static restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
 import static restaurantvoting.util.validation.ValidationUtil.checkNew;
 
@@ -77,6 +79,6 @@ public class DishController {
                                  @RequestParam @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                  @PathVariable int restaurantId) {
         log.info("get between dates({} - {}) for restaurant {}", startDate, endDate, restaurantId);
-        return repository.getBetweenHalfOpen(startDate, endDate, restaurantId);
+        return repository.getBetweenHalfOpen(dayOrMin(startDate), dayOrMax(endDate), restaurantId);
     }
 }

@@ -3,7 +3,7 @@
 Restaurant voting application
 ===============================
 
-Наиболее востребованные технологии /инструменты / фреймворки Java Enterprise:
+Most popular technologies / tools /frameworks Java Enterprise:
 Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)
 
 ##  Technical requirement:
@@ -94,10 +94,10 @@ P.P.S.: Assume that your API will be used by a frontend developer to build front
 `curl -s -v http://localhost:8080/api/profile/1/votes/100`
 
 #### create Vote for User 1
-`curl -s -X POST -d '{"user": {"id": "1", "firstName": "Dmitrii", "lastName": "Petrov", "email": "user@yandex.ru", "password": "password"}, "restaurant": {"id": "2", "name": "Noma"}}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/api/profile/1/votes`
+`curl -s -X POST -d '{"restaurant": {"id": "2", "name": "Noma"}}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/api/profile/votes --user user@yandex.ru:password`
 
 #### update Vote 1 for User 1
-`curl -s -X PUT -d '{"user": {"id": "1", "firstName": "Dmitrii", "lastName": "Petrov", "email": "user@yandex.ru", "password": "password"}, "restaurant": {"id": "2", "name": "Noma"}}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/api/profile/1/votes/1`
+`curl -s -X PUT -d '{"restaurant": {"id": "2", "name": "Noma"}}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/api/profile/votes/1 --user user@yandex.ru:password`
 
 #### delete Vote 1 for User 1
 `curl -s -X DELETE http://localhost:8080/api/profile/1/votes/1`

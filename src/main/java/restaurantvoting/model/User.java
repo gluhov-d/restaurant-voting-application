@@ -1,6 +1,7 @@
 package restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
-import restaurantvoting.HasId;
+import restaurantvoting.HasIdAndEmail;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -27,7 +28,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity implements HasId, Serializable {
+public class User extends BaseEntity implements HasIdAndEmail, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -51,6 +52,8 @@ public class User extends BaseEntity implements HasId, Serializable {
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(max = 256)
+    // https://stackoverflow.com/a/12505165/548473
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "boolean default true")
@@ -58,6 +61,7 @@ public class User extends BaseEntity implements HasId, Serializable {
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date registered = new Date();
 
     @Enumerated(EnumType.STRING)

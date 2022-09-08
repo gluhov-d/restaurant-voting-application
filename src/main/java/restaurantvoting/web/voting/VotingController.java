@@ -5,17 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurantvoting.model.Voting;
 import restaurantvoting.repository.VotingRepository;
+import restaurantvoting.service.VotingService;
+import restaurantvoting.web.AuthUser;
 
-import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
-import static restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
-import static restaurantvoting.util.validation.ValidationUtil.checkNew;
 import static restaurantvoting.web.voting.VotingController.REST_URL;
 
 @RestController
@@ -23,47 +22,34 @@ import static restaurantvoting.web.voting.VotingController.REST_URL;
 @Slf4j
 @AllArgsConstructor
 public class VotingController {
-    final static String REST_URL = "/api/profile";
+    final static String REST_URL = "/api/restaurants";
 
     private final VotingRepository repository;
+    private final VotingService service;
 
-    @GetMapping("/{userId}/votes/{id}")
-    public ResponseEntity<Voting> get(@PathVariable int userId, @PathVariable int id) {
-        log.info("get vote {} for user {}", id, userId);
+    @GetMapping("/{restaurantId}/votes/{id}")
+    public ResponseEntity<Voting> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId, @PathVariable int id) {
+        log.info("get restaurant {} vote {} for user {}", restaurantId, id, authUser.id());
         return ResponseEntity.of(repository.findById(id));
     }
 
-    @GetMapping(value = "/{userId}/votes")
-    public List<Voting> getAll(@PathVariable int userId) {
-        log.info("get all votes for user {}", userId);
-        return repository.getAll(userId);
-    }
-
-    @DeleteMapping("/{userId}/votes/{id}")
+    @PutMapping(value = "/{restaurantId}/votes/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int userId, @PathVariable int id) {
-        log.info("delete vote {} for user {}", id, userId);
-        Voting voting = repository.checkBelong(id, userId);
-        repository.delete(voting);
-    }
-
-    @PutMapping(value = "/{userId}/votes/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Voting voting, @PathVariable int userId, @PathVariable int id) {
-        log.info("update vote {} for user {}", id, userId);
-        assureIdConsistent(voting, id);
+    public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId, @PathVariable int id) {
+        int userId = authUser.id();
+        log.info("update user {} vote {} for restaurant {}", userId, id, restaurantId);
         repository.checkBelong(id, userId);
-        repository.save(voting);
+        service.save(userId, restaurantId);
     }
 
-    @PostMapping(value = "/{userId}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Voting> createWithLocation(@Valid @RequestBody Voting voting, @PathVariable int userId) {
-        log.info("create vote {} for user {}", voting, userId);
-        checkNew(voting);
-        Voting created = repository.save(voting);
+    @PostMapping(value = "/{restaurantId}/votes")
+    public ResponseEntity<Voting> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
+        int userId = authUser.id();
+        log.info("user {} vote for restaurant {}", userId, restaurantId);
+        Voting created = service.save(userId, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(voting.getId()).toUri();
+                .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 }
