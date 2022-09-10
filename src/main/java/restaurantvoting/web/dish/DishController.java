@@ -83,6 +83,6 @@ public class DishController {
                                  @RequestParam @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                  @PathVariable int restaurantId) {
         log.info("get between dates({} - {}) for restaurant {}", startDate, endDate, restaurantId);
-        return repository.getBetweenHalfOpen(dayOrMin(startDate), dayOrMax(endDate), restaurantId);
+        return repository.getBetween(dayOrMin(startDate), dayOrMax(endDate), restaurantId);
     }
 }

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import restaurantvoting.util.validation.NoHtml;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -19,6 +20,7 @@ public abstract class NamedEntity extends BaseEntity {
     @NotBlank
     @Size(min = 2, max = 128)
     @Column(name = "name", nullable = false)
+    @NoHtml
     protected String name;
 
     protected NamedEntity(Integer id, String name) {

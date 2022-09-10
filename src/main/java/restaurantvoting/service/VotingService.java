@@ -8,6 +8,8 @@ import restaurantvoting.repository.RestaurantRepository;
 import restaurantvoting.repository.UserRepository;
 import restaurantvoting.repository.VotingRepository;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class VotingService {
@@ -16,10 +18,14 @@ public class VotingService {
     private final RestaurantRepository restaurantRepository;
 
     @Transactional
-    public Voting save(int restaurantId, int id) {
-        Voting voting = new Voting(null, null, null);
-        voting.setRestaurant(restaurantRepository.getById(restaurantId));
-        voting.setUser(userRepository.getById(id));
+    public Voting save(int userId, int restaurantId, LocalDateTime votingDateTime) {
+        Voting voting = new Voting(null, userRepository.getById(userId), restaurantRepository.getById(restaurantId), votingDateTime);
+        return votingRepository.save(voting);
+    }
+
+    @Transactional
+    public Voting update(int userId, int restaurantId, int voteId, LocalDateTime votingDateTime) {
+        Voting voting = new Voting(voteId, userRepository.getById(userId), restaurantRepository.getById(restaurantId), votingDateTime);
         return votingRepository.save(voting);
     }
 }

@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 import restaurantvoting.HasIdAndEmail;
+import restaurantvoting.util.validation.NoHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -37,16 +38,20 @@ public class User extends BaseEntity implements HasIdAndEmail, Serializable {
     @Email
     @NotBlank
     @Size(max = 128)
+    // https://stackoverflow.com/questions/17480809
+    @NoHtml
     private String email;
 
     @Column(name = "first_name", nullable = false)
     @Size(min = 2, max = 128)
     @NotBlank
+    @NoHtml
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
     @Size(min = 2, max = 128)
     @NotBlank
+    @NoHtml
     private String lastName;
 
     @Column(name = "password", nullable = false)

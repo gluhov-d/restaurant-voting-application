@@ -6,16 +6,20 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import restaurantvoting.model.Role;
 import restaurantvoting.model.User;
 import restaurantvoting.repository.UserRepository;
 import restaurantvoting.util.JsonUtil;
 import restaurantvoting.web.AbstractControllerTest;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
 import static restaurantvoting.web.user.UserTestData.*;
 
 class AdminUserControllerTest extends AbstractControllerTest {
@@ -78,6 +82,19 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -163,5 +180,32 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(invalid)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateDuplicate() throws Exception {
+        User updatedUser = new User(user);
+        updatedUser.setEmail(ADMIN_MAIL);
+        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(updatedUser, "password")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(EXCEPTION_DUPLICATE_EMAIL)));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
+    void createDuplicate() throws Exception {
+        User expectedUser = new User(null, "NewFirstName", "NewLastName", USER_MAIL, "newPass", Role.USER);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonWithPassword(expectedUser, "newPass")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(EXCEPTION_DUPLICATE_EMAIL)));
     }
 }

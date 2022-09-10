@@ -39,6 +39,12 @@ class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + MIRAZUR_RESTAURANT_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithUserDetails(value = USER_MAIL)
     void getNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND_ID))

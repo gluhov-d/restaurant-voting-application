@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurantvoting.model.User;
-import restaurantvoting.repository.UserRepository;
 import restaurantvoting.to.UserTo;
 import restaurantvoting.util.UserUtil;
 import restaurantvoting.web.AuthUser;
@@ -28,8 +27,8 @@ public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
     @GetMapping
-    public UserTo get(@AuthenticationPrincipal AuthUser authUser) {
-        return authUser.getUserTo();
+    public User get(@AuthenticationPrincipal AuthUser authUser) {
+        return authUser.getUser();
     }
 
     @DeleteMapping()
@@ -59,7 +58,7 @@ public class ProfileController extends AbstractUserController {
     }
 
     @GetMapping("/with-votes")
-    public ResponseEntity<User> getWithVotes(@AuthenticationPrincipal AuthUser authUser) {
+    public ResponseEntity<restaurantvoting.model.User> getWithVotes(@AuthenticationPrincipal AuthUser authUser) {
         return super.getWithVotes(authUser.id());
     }
 }

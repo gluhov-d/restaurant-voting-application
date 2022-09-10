@@ -2,7 +2,6 @@ package restaurantvoting.web.user;
 
 import restaurantvoting.model.Role;
 import restaurantvoting.model.User;
-import restaurantvoting.to.UserTo;
 import restaurantvoting.util.JsonUtil;
 import restaurantvoting.web.MatcherFactory;
 
@@ -11,11 +10,10 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static restaurantvoting.web.voting.VotingTestData.adminVoting;
+import static restaurantvoting.web.voting.VotingTestData.adminVoting1;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "votes", "password");
-    public static final MatcherFactory.Matcher<UserTo> USER_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(UserTo.class, "voted", "password");
     public static final MatcherFactory.Matcher<User> USER_WITH_VOTES_MATCHER =
             MatcherFactory.usingAssertions(User.class,
                     //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
@@ -35,7 +33,7 @@ public class UserTestData {
     public static final User admin = new User(ADMIN_ID, "Anton", "Bashirov", ADMIN_MAIL, "admin", Role.ADMIN, Role.USER);
 
     static {
-        admin.setVotes(Collections.singleton(adminVoting));
+        admin.setVotes(Collections.singleton(adminVoting1));
     }
 
     public static User getNew() {

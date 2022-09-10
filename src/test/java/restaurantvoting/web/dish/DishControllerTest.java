@@ -95,7 +95,27 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dishes));
+                .andExpect(DISH_MATCHER.contentJson(allDishesMirazurRestaurant));
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getBetween() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", "2022-08-25")
+                .param("endDate", "2022-08-25"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(DISH_MATCHER.contentJson(dishesForOneDay));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getBetweenAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/filter"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(DISH_MATCHER.contentJson(allDishesMirazurRestaurant));
     }
 
     @Test
@@ -113,6 +133,18 @@ class DishControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void updateInvalid() throws Exception {
         Dish invalid = new Dish(DISH_ID, null, null, 5000);
+        perform(MockMvcRequestBuilders.put(REST_URL + DISH_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateHtmlUnsafe() throws Exception {
+        Dish invalid = new Dish(DISH_ID, "<script>alert(777)</script>>", mirazurDish2.getLocalDate(), 500);
         perform(MockMvcRequestBuilders.put(REST_URL + DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))

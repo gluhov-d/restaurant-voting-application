@@ -22,8 +22,13 @@ public class DishTestData {
     public static final Dish nomaDish1 = new Dish(DISH_ID + 3, "Tuna", of(2022, Month.AUGUST, 25), 35000);
     public static final Dish nomaDish2 = new Dish(DISH_ID + 4, "Lobster", of(2022, Month.AUGUST, 25), 40000);
     public static final Dish nomaDish3 = new Dish(DISH_ID + 5, "Carp", of(2022, Month.AUGUST, 25), 43000);
+    public static final Dish mirazurDish4 = new Dish(DISH_ID + 6, "Tuna", of(2022, Month.AUGUST, 26), 35000);
+    public static final Dish mirazurDish5 = new Dish(DISH_ID + 7, "Lobster", of(2022, Month.AUGUST, 26), 40000);
+    public static final Dish mirazurDish6 = new Dish(DISH_ID + 8, "Carp", of(2022, Month.AUGUST, 26), 43000);
 
-    public static final List<Dish> dishes = List.of(mirazurDish1, mirazurDish2, mirazurDish3);
+    public static final List<Dish> dishesForOneDay = List.of(mirazurDish3, mirazurDish2, mirazurDish1);
+    public static final List<Dish> allDishesMirazurRestaurant = List.of(mirazurDish6, mirazurDish5, mirazurDish4, mirazurDish3, mirazurDish2, mirazurDish1);
+    public static final List<Dish> unsortedAllDishesMirazurRestaurant = List.of(mirazurDish1, mirazurDish2, mirazurDish3, mirazurDish4, mirazurDish5, mirazurDish6);
 
     public static Dish getNew() {
         return new Dish(null, "New Steak", of(2022, Month.AUGUST, 25), 45000);

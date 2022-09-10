@@ -4,28 +4,18 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import restaurantvoting.model.User;
-import restaurantvoting.to.UserTo;
-import restaurantvoting.util.UserUtil;
 
 @Getter
-@ToString(of = "userTo")
+@ToString(of = "user")
 public class AuthUser extends org.springframework.security.core.userdetails.User {
-    private UserTo userTo;
+    private User user;
 
-    public AuthUser(@NonNull User user) {
+    public AuthUser(@NonNull restaurantvoting.model.User user) {
         super(user.getEmail(), user.getPassword(), user.getRoles());
-        setTo(UserUtil.asTo(user, null));
-    }
-
-    public void setTo(UserTo newTo) {
-        userTo = newTo;
-    }
-
-    public UserTo getUserTo() {
-        return userTo;
+        this.user = user;
     }
 
     public int id() {
-        return userTo.id();
+        return user.id();
     }
 }

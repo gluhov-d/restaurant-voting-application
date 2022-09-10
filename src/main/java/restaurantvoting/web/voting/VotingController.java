@@ -14,7 +14,9 @@ import restaurantvoting.service.VotingService;
 import restaurantvoting.web.AuthUser;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
+import static restaurantvoting.util.validation.ValidationUtil.checkVotingTime;
 import static restaurantvoting.web.voting.VotingController.REST_URL;
 
 @RestController
@@ -22,31 +24,35 @@ import static restaurantvoting.web.voting.VotingController.REST_URL;
 @Slf4j
 @AllArgsConstructor
 public class VotingController {
-    final static String REST_URL = "/api/restaurants";
+    final static String REST_URL = "/api/votes";
 
     private final VotingRepository repository;
     private final VotingService service;
 
-    @GetMapping("/{restaurantId}/votes/{id}")
-    public ResponseEntity<Voting> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId, @PathVariable int id) {
-        log.info("get restaurant {} vote {} for user {}", restaurantId, id, authUser.id());
+    @GetMapping("/{id}")
+    public ResponseEntity<Voting> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
+        log.info("get vote {} for user {}", id, authUser.id());
         return ResponseEntity.of(repository.get(id, authUser.id()));
     }
 
-    @PutMapping(value = "/{restaurantId}/votes/{id}")
+    @PutMapping(value = "/{id}/restaurants/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId, @PathVariable int id) {
+    public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @PathVariable int restaurantId) {
         int userId = authUser.id();
-        log.info("update user {} vote {} for restaurant {}", userId, id, restaurantId);
+        log.info("update vote for user {}", userId);
+        LocalDateTime votingDateTime = LocalDateTime.now();
+        checkVotingTime(votingDateTime.toLocalTime());
         repository.checkBelong(id, userId);
-        service.save(userId, restaurantId);
+        service.update(userId, restaurantId, id, votingDateTime);
     }
 
-    @PostMapping(value = "/{restaurantId}/votes")
+    @PostMapping(value = "/restaurants/{restaurantId}")
     public ResponseEntity<Voting> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @PathVariable int restaurantId) {
         int userId = authUser.id();
         log.info("user {} vote for restaurant {}", userId, restaurantId);
-        Voting created = service.save(userId, restaurantId);
+        LocalDateTime votingDateTime = LocalDateTime.now();
+        checkVotingTime(votingDateTime.toLocalTime());
+        Voting created = service.save(userId, restaurantId, votingDateTime);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
