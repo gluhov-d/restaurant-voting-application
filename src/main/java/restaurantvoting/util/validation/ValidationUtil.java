@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import restaurantvoting.HasId;
-import restaurantvoting.error.DataConflictException;
 import restaurantvoting.error.IllegalRequestDataException;
 
 import java.time.LocalTime;
@@ -14,6 +13,7 @@ import static restaurantvoting.util.VotingUtil.END_OF_VOTING;
 
 @UtilityClass
 public class ValidationUtil {
+    public static final String EXCEPTION_VOTING_CLOSED = "Voting closed today at ";
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
@@ -38,7 +38,7 @@ public class ValidationUtil {
 
     public static void checkVotingTime(LocalTime votingTime) {
         if (!isBetweenHalfOpen(votingTime, null, END_OF_VOTING)) {
-            throw new DataConflictException("Voting closed today at " + END_OF_VOTING);
+            throw new IllegalRequestDataException(EXCEPTION_VOTING_CLOSED + END_OF_VOTING);
         }
     }
 
