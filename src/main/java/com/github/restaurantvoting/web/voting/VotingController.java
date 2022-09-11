@@ -1,5 +1,9 @@
 package com.github.restaurantvoting.web.voting;
 
+import com.github.restaurantvoting.model.Voting;
+import com.github.restaurantvoting.repository.VotingRepository;
+import com.github.restaurantvoting.service.VotingService;
+import com.github.restaurantvoting.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,13 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.restaurantvoting.model.Voting;
-import com.github.restaurantvoting.repository.VotingRepository;
-import com.github.restaurantvoting.service.VotingService;
-import com.github.restaurantvoting.web.AuthUser;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.github.restaurantvoting.util.validation.ValidationUtil.checkVotingTime;
 import static com.github.restaurantvoting.web.voting.VotingController.REST_URL;
@@ -52,10 +53,17 @@ public class VotingController {
         log.info("user {} vote for restaurant {}", userId, restaurantId);
         LocalDateTime votingDateTime = LocalDateTime.now();
         checkVotingTime(votingDateTime.toLocalTime());
-        Voting created = service.save(userId, restaurantId, votingDateTime);
+        Voting voting;
+        Optional<Voting> checkNew = repository.checkNewTodayVoting(userId, votingDateTime.toLocalDate());
+        if (checkNew.isPresent()) {
+            voting = service.update(userId, restaurantId, checkNew.get().id(), votingDateTime);
+        } else {
+            voting = service.save(userId, restaurantId, votingDateTime);
+        }
+
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+                .buildAndExpand(voting.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(voting);
     }
 }

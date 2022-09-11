@@ -1,9 +1,9 @@
 package com.github.restaurantvoting.repository;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import com.github.restaurantvoting.error.DataConflictException;
 import com.github.restaurantvoting.model.Dish;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;

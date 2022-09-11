@@ -1,10 +1,10 @@
 package com.github.restaurantvoting.to;
 
+import com.github.restaurantvoting.HasIdAndEmail;
+import com.github.restaurantvoting.util.validation.NoHtml;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
-import com.github.restaurantvoting.HasIdAndEmail;
-import com.github.restaurantvoting.util.validation.NoHtml;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

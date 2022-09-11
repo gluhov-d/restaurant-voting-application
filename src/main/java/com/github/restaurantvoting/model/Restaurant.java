@@ -25,7 +25,6 @@ public class Restaurant extends NamedEntity {
     private List<Dish> dishes;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-    @JsonManagedReference(value = "restaurant-votes")
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
     private Set<Voting> votes;
 

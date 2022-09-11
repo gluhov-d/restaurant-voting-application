@@ -1,9 +1,9 @@
 package com.github.restaurantvoting.repository;
 
+import com.github.restaurantvoting.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.restaurantvoting.model.User;
 
 import java.util.Optional;
 

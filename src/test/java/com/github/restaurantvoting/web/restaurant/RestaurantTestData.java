@@ -5,8 +5,8 @@ import com.github.restaurantvoting.web.MatcherFactory;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.restaurantvoting.web.dish.DishTestData.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "dishes", "votes");

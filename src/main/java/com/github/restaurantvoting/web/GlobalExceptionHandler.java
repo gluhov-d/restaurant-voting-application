@@ -1,5 +1,8 @@
 package com.github.restaurantvoting.web;
 
+import com.github.restaurantvoting.error.AppException;
+import com.github.restaurantvoting.error.DataConflictException;
+import com.github.restaurantvoting.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -15,9 +18,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import com.github.restaurantvoting.error.AppException;
-import com.github.restaurantvoting.error.DataConflictException;
-import com.github.restaurantvoting.util.validation.ValidationUtil;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;

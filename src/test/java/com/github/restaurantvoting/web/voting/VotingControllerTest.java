@@ -1,5 +1,8 @@
 package com.github.restaurantvoting.web.voting;
 
+import com.github.restaurantvoting.model.Voting;
+import com.github.restaurantvoting.repository.VotingRepository;
+import com.github.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
@@ -8,19 +11,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.restaurantvoting.model.Voting;
-import com.github.restaurantvoting.repository.VotingRepository;
-import com.github.restaurantvoting.web.AbstractControllerTest;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static com.github.restaurantvoting.util.validation.ValidationUtil.EXCEPTION_VOTING_CLOSED;
 import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.MIRAZUR_RESTAURANT_ID;
 import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.NOMA_RESTAURANT_ID;
 import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static com.github.restaurantvoting.web.voting.VotingTestData.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class VotingControllerTest extends AbstractControllerTest {
     private static final String REST_URL = VotingController.REST_URL + "/";

@@ -9,7 +9,7 @@ import static com.github.restaurantvoting.web.user.UserTestData.admin;
 import static com.github.restaurantvoting.web.user.UserTestData.user;
 
 public class VotingTestData {
-    public static final MatcherFactory.Matcher<Voting> VOTING_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Voting.class, "dateTime", "user", "restaurant");
+    public static final MatcherFactory.Matcher<Voting> VOTING_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Voting.class, "dateTime", "localDate", "user", "restaurant.dishes", "restaurant.votes");
 
     public static final int VOTE_ID = 1;
     public static final int ADMIN_VOTE_ID = 2;

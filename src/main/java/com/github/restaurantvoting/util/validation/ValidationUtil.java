@@ -1,10 +1,10 @@
 package com.github.restaurantvoting.util.validation;
 
+import com.github.restaurantvoting.HasId;
+import com.github.restaurantvoting.error.IllegalRequestDataException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
-import com.github.restaurantvoting.HasId;
-import com.github.restaurantvoting.error.IllegalRequestDataException;
 
 import java.time.LocalTime;
 

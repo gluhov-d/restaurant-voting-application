@@ -1,10 +1,10 @@
 package com.github.restaurantvoting.model;
 
+import com.github.restaurantvoting.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.github.restaurantvoting.util.validation.NoHtml;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

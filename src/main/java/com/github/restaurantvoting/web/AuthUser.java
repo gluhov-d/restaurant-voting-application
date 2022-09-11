@@ -1,9 +1,9 @@
 package com.github.restaurantvoting.web;
 
+import com.github.restaurantvoting.model.User;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import com.github.restaurantvoting.model.User;
 
 @Getter
 @ToString(of = "user")

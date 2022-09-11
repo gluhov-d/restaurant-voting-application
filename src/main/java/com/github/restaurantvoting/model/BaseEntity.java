@@ -1,10 +1,10 @@
 package com.github.restaurantvoting.model;
 
+import com.github.restaurantvoting.HasId;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
-import com.github.restaurantvoting.HasId;
 
 import javax.persistence.*;
 

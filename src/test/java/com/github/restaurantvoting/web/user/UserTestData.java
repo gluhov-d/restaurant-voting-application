@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.github.restaurantvoting.web.voting.VotingTestData.adminVoting1;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "votes", "password");
@@ -18,7 +18,7 @@ public class UserTestData {
             MatcherFactory.usingAssertions(User.class,
                     //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "votes.restaurant", "votes.dateTime", "votes.user", "password").isEqualTo(e),
+                            .ignoringFields("registered", "votes.restaurant", "votes.dateTime", "votes.localDate", "votes.user", "password").isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
                     });

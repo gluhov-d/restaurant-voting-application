@@ -18,26 +18,26 @@ import org.springframework.context.annotation.Configuration;
         scheme = "basic"
 )
 @OpenAPIDefinition(
-    info = @Info(
-            title = "REST API documentation",
-            version = "1.0",
-        description = """
-                Spring Boot <a href='https://github.com/gluhov-d/restaurant-voting-application'>application</a>
-                <p><b>Test credentials: </b><br>
-                - user@yandex.ru / password <br>
-                - admin@gmail.com / admin </p>
-                """,
-        contact = @Contact(url = "https://t.me/dmitriiGluhov", name = "Dmitrii Gluhov", email = "glukhov.d@gmail.com")
-),
-security = @SecurityRequirement(name = "basicAuth")
+        info = @Info(
+                title = "REST API documentation",
+                version = "1.0",
+                description = """
+                        Spring Boot <a href='https://github.com/gluhov-d/restaurant-voting-application'>restaurants voting application</a>
+                        <p><b>Test credentials: </b><br>
+                        - user@yandex.ru / password <br>
+                        - admin@gmail.com / admin </p>
+                        """,
+                contact = @Contact(url = "https://t.me/dmitriiGluhov", name = "Dmitrii Gluhov", email = "glukhov.d@gmail.com")
+        ),
+        security = @SecurityRequirement(name = "basicAuth")
 )
 public class OpenConfig {
 
-        @Bean
-        public GroupedOpenApi api() {
-            return GroupedOpenApi.builder()
-                    .group("REST API")
-                    .pathsToMatch("/api/**")
-                    .build();
-        }
+    @Bean
+    public GroupedOpenApi api() {
+        return GroupedOpenApi.builder()
+                .group("REST API")
+                .pathsToMatch("/api/**")
+                .build();
+    }
 }

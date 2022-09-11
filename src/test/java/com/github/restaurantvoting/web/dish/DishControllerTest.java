@@ -1,5 +1,9 @@
 package com.github.restaurantvoting.web.dish;
 
+import com.github.restaurantvoting.model.Dish;
+import com.github.restaurantvoting.repository.DishRepository;
+import com.github.restaurantvoting.util.JsonUtil;
+import com.github.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,19 +12,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.restaurantvoting.model.Dish;
-import com.github.restaurantvoting.repository.DishRepository;
-import com.github.restaurantvoting.util.JsonUtil;
-import com.github.restaurantvoting.web.AbstractControllerTest;
 
+import static com.github.restaurantvoting.web.dish.DishTestData.*;
+import static com.github.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
+import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.restaurantvoting.web.dish.DishTestData.*;
-import static com.github.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
-import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 
 class DishControllerTest extends AbstractControllerTest {
     private static final String REST_URL = DishController.REST_URL + "/" + MIRAZUR_RESTAURANT_ID + "/dishes/";

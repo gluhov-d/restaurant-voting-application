@@ -1,9 +1,9 @@
 package com.github.restaurantvoting.web;
 
+import com.github.restaurantvoting.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import com.github.restaurantvoting.util.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;

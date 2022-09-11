@@ -1,13 +1,13 @@
 package com.github.restaurantvoting.web.user;
 
+import com.github.restaurantvoting.model.User;
+import com.github.restaurantvoting.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import com.github.restaurantvoting.model.User;
-import com.github.restaurantvoting.repository.UserRepository;
 
 import static com.github.restaurantvoting.util.UserUtil.prepareToSave;
 

@@ -2,13 +2,13 @@ package com.github.restaurantvoting.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.github.restaurantvoting.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import com.github.restaurantvoting.util.JsonUtil;
 
 import java.sql.SQLException;
 

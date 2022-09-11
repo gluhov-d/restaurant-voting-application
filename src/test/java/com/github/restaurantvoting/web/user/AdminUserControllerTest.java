@@ -1,5 +1,10 @@
 package com.github.restaurantvoting.web.user;
 
+import com.github.restaurantvoting.model.Role;
+import com.github.restaurantvoting.model.User;
+import com.github.restaurantvoting.repository.UserRepository;
+import com.github.restaurantvoting.util.JsonUtil;
+import com.github.restaurantvoting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,19 +13,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.restaurantvoting.model.Role;
-import com.github.restaurantvoting.model.User;
-import com.github.restaurantvoting.repository.UserRepository;
-import com.github.restaurantvoting.util.JsonUtil;
-import com.github.restaurantvoting.web.AbstractControllerTest;
 
+import static com.github.restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
+import static com.github.restaurantvoting.web.user.UserTestData.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
-import static com.github.restaurantvoting.web.user.UserTestData.*;
 
 class AdminUserControllerTest extends AbstractControllerTest {
 

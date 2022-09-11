@@ -2,6 +2,8 @@ package com.github.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.restaurantvoting.HasIdAndEmail;
+import com.github.restaurantvoting.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +11,6 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
-import com.github.restaurantvoting.HasIdAndEmail;
-import com.github.restaurantvoting.util.validation.NoHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;

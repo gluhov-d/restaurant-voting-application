@@ -1,5 +1,8 @@
 package com.github.restaurantvoting.web.dish;
 
+import com.github.restaurantvoting.model.Dish;
+import com.github.restaurantvoting.repository.DishRepository;
+import com.github.restaurantvoting.service.DishService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,9 +13,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.restaurantvoting.model.Dish;
-import com.github.restaurantvoting.repository.DishRepository;
-import com.github.restaurantvoting.service.DishService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -43,7 +43,7 @@ public class DishController {
 
     @DeleteMapping("/{restaurantId}/dishes/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable int restaurantId, @PathVariable int id) {
         log.info("delete dish {} for restaurant {}", id, restaurantId);
         Dish dish = repository.checkBelong(id, restaurantId);
@@ -58,7 +58,7 @@ public class DishController {
 
     @PutMapping(value = "/{restaurantId}/dishes/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void update(@Valid @RequestBody Dish dish, @PathVariable int restaurantId, @PathVariable int id) {
         log.info("update dish {} for restaurant {}", id, restaurantId);
         assureIdConsistent(dish, id);
@@ -67,7 +67,7 @@ public class DishController {
     }
 
     @PostMapping(value = "/{restaurantId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         log.info("create dish {} for restaurant {}", dish, restaurantId);
         checkNew(dish);

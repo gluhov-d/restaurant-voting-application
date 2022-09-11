@@ -1,11 +1,11 @@
 package com.github.restaurantvoting.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.github.restaurantvoting.model.Dish;
 import com.github.restaurantvoting.repository.DishRepository;
 import com.github.restaurantvoting.repository.RestaurantRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor

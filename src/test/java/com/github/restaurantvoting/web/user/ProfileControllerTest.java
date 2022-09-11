@@ -1,24 +1,24 @@
 package com.github.restaurantvoting.web.user;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.github.restaurantvoting.model.User;
 import com.github.restaurantvoting.repository.UserRepository;
 import com.github.restaurantvoting.to.UserTo;
 import com.github.restaurantvoting.util.JsonUtil;
 import com.github.restaurantvoting.util.UserUtil;
 import com.github.restaurantvoting.web.AbstractControllerTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.github.restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
+import static com.github.restaurantvoting.web.user.UserTestData.*;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.restaurantvoting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
-import static com.github.restaurantvoting.web.user.UserTestData.*;
 
 class ProfileControllerTest extends AbstractControllerTest {
     final static String REST_URL = ProfileController.REST_URL;
@@ -38,6 +38,7 @@ class ProfileControllerTest extends AbstractControllerTest {
     @Test
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
+                .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
 
