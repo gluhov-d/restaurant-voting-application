@@ -6,6 +6,9 @@ Restaurant voting application
 Most popular technologies / tools /frameworks Java Enterprise:
 Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)
 
+Download executable application https://disk.yandex.ru/d/47Z4TF4uvZTVYw
+To test application use swagger at http://localhost:8080/swagger-ui/index.html
+
 ##  Technical requirement:
 Design and implement a REST API using Hibernate/Spring/SpringMVC (Spring-Boot preferred!) **without frontend**.
 

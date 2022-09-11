@@ -14,6 +14,7 @@
     <name>Restaurant voting application</name>
     <description>Restaurant voting application</description>
     <properties>
+        <start-class>com.github.restaurantvoting.RestaurantVotingRestApplication</start-class>
         <java.version>17</java.version>
         <springdoc.version>1.6.2</springdoc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,7 +111,16 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <fork>true</fork>
+                    <mainClass>${start-class}</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <!--https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven -->
