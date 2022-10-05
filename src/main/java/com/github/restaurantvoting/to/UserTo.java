@@ -3,7 +3,6 @@ package com.github.restaurantvoting.to;
 import com.github.restaurantvoting.HasIdAndEmail;
 import com.github.restaurantvoting.util.validation.NoHtml;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Value;
 
 import javax.validation.constraints.Email;
@@ -11,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Value
-@Getter
 @EqualsAndHashCode(callSuper = true)
 public class UserTo extends BaseTo implements HasIdAndEmail {
 

@@ -8,12 +8,12 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalTime;
 
+import static com.github.restaurantvoting.util.DateTimeUtil.END_OF_VOTING_UPDATE;
 import static com.github.restaurantvoting.util.Util.isBetweenHalfOpen;
-import static com.github.restaurantvoting.util.VotingUtil.END_OF_VOTING;
 
 @UtilityClass
 public class ValidationUtil {
-    public static final String EXCEPTION_VOTING_CLOSED = "Voting closed today at ";
+    public static final String EXCEPTION_VOTING_CLOSED = "You can't update vote after ";
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
@@ -37,8 +37,8 @@ public class ValidationUtil {
     }
 
     public static void checkVotingTime(LocalTime votingTime) {
-        if (!isBetweenHalfOpen(votingTime, null, END_OF_VOTING)) {
-            throw new IllegalRequestDataException(EXCEPTION_VOTING_CLOSED + END_OF_VOTING);
+        if (!isBetweenHalfOpen(votingTime, null, END_OF_VOTING_UPDATE)) {
+            throw new IllegalRequestDataException(EXCEPTION_VOTING_CLOSED + END_OF_VOTING_UPDATE);
         }
     }
 

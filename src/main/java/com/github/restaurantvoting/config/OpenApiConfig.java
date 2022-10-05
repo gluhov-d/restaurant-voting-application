@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
         ),
         security = @SecurityRequirement(name = "basicAuth")
 )
-public class OpenConfig {
+public class OpenApiConfig {
 
     @Bean
     public GroupedOpenApi api() {

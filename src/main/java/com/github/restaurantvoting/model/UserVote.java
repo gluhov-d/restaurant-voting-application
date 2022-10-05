@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.github.restaurantvoting.util.DateTimeUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,26 +16,27 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "voting", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "local_date"}, name = "voting_unique_user_localdate_idx")})
+@Table(name = "user_vote", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "local_date"}, name = "user_vote_unique_user_localdate_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
-public class Voting extends BaseEntity {
+        property = "id",
+        scope = UserVote.class)
+public class UserVote extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference(value = "user-votes") // https://stackoverflow.com/a/20271621/2161414
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     // https://stackoverflow.com/a/58771441/2161414
-    @Column(name = "date_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
@@ -43,15 +45,20 @@ public class Voting extends BaseEntity {
     @NotNull
     private LocalDate localDate;
 
-    public Voting(Integer id, User user, Restaurant restaurant) {
-        this(id, user, restaurant, LocalDateTime.now());
+    public UserVote(Integer id, User user, Restaurant restaurant) {
+        this(id, user, restaurant, LocalDateTime.now(DateTimeUtil.getClock()));
     }
 
-    public Voting(Integer id, User user, Restaurant restaurant, LocalDateTime dateTime) {
+    public UserVote(Integer id, User user, Restaurant restaurant, LocalDateTime dateTime) {
         super(id);
         this.user = user;
         this.restaurant = restaurant;
         this.dateTime = dateTime;
         this.localDate = dateTime.toLocalDate();
+    }
+
+    @Override
+    public String toString() {
+        return "Vote:" + id + "[" + dateTime + "]";
     }
 }

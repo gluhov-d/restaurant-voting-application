@@ -6,10 +6,19 @@ import com.github.restaurantvoting.web.MatcherFactory;
 import java.time.Month;
 import java.util.List;
 
+import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.mirazurRestaurant;
 import static java.time.LocalDate.of;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DishTestData {
     public static final MatcherFactory.Matcher<Dish> DISH_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Dish.class, "restaurant");
+    public static final MatcherFactory.Matcher<Dish> DISH_WITH_RESTAURANT_MATCHER =
+            MatcherFactory.usingAssertions(Dish.class,
+                    (a, e) -> assertThat(a).usingRecursiveComparison()
+                            .ignoringFields("restaurant.dishes", "restaurant.votes").isEqualTo(e),
+                    (a, e) -> {
+                        throw new UnsupportedOperationException();
+                    });
 
     public static final int DISH_ID = 1;
     public static final int MIRAZUR_RESTAURANT_ID = 1;
@@ -26,12 +35,11 @@ public class DishTestData {
     public static final Dish mirazurDish5 = new Dish(DISH_ID + 7, "Lobster", of(2022, Month.AUGUST, 26), 40000);
     public static final Dish mirazurDish6 = new Dish(DISH_ID + 8, "Carp", of(2022, Month.AUGUST, 26), 43000);
 
-    public static final List<Dish> dishesForOneDay = List.of(mirazurDish3, mirazurDish2, mirazurDish1);
-    public static final List<Dish> allDishesMirazurRestaurant = List.of(mirazurDish6, mirazurDish5, mirazurDish4, mirazurDish3, mirazurDish2, mirazurDish1);
-    public static final List<Dish> unsortedAllDishesMirazurRestaurant = List.of(mirazurDish1, mirazurDish2, mirazurDish3, mirazurDish4, mirazurDish5, mirazurDish6);
+    public static final List<Dish> dishesForOneDay = List.of(mirazurDish2, mirazurDish3, mirazurDish1);
+    public static final List<Dish> allDishesMirazurRestaurant = List.of(mirazurDish6, mirazurDish5, mirazurDish4, mirazurDish2, mirazurDish3, mirazurDish1);
 
-    public static Dish getNew() {
-        return new Dish(null, "New Steak", of(2022, Month.AUGUST, 25), 45000);
+    static {
+        mirazurDish1.setRestaurant(mirazurRestaurant);
     }
 
     public static Dish getUpdated() {

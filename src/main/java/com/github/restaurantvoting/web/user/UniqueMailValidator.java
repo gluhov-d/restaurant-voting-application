@@ -4,7 +4,7 @@ import com.github.restaurantvoting.HasIdAndEmail;
 import com.github.restaurantvoting.repository.UserRepository;
 import com.github.restaurantvoting.web.SecurityUtil;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;

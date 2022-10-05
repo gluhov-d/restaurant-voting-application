@@ -1,6 +1,7 @@
 package com.github.restaurantvoting.web.restaurant;
 
 import com.github.restaurantvoting.model.Restaurant;
+import com.github.restaurantvoting.to.RestaurantTo;
 import com.github.restaurantvoting.web.MatcherFactory;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "dishes", "votes");
+    public static final MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_WITH_DISHES_MATCHER = MatcherFactory.usingEqualsComparator(RestaurantTo.class);
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_WITH_DISHES_MATCHER =
             MatcherFactory.usingAssertions(Restaurant.class,
                     (a, e) -> assertThat(a).usingRecursiveComparison()
@@ -28,7 +30,7 @@ public class RestaurantTestData {
     public static final List<Restaurant> restaurants = List.of(mirazurRestaurant, nomaRestaurant);
 
     static {
-        mirazurRestaurant.setDishes(unsortedAllDishesMirazurRestaurant);
+        mirazurRestaurant.setDishes(allDishesMirazurRestaurant);
         nomaRestaurant.setDishes(List.of(nomaDish1, nomaDish2, nomaDish3));
     }
 

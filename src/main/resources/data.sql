@@ -25,7 +25,7 @@ VALUES ('2022-08-25', 'Goose', 25000, 1),
        ('2022-08-26', 'Beef', 20000, 2),
        ('2022-08-26', 'Frankfurters', 15000, 2);
 
-INSERT INTO VOTING (restaurant_id, user_id, date_time, local_date)
+INSERT INTO USER_VOTE (restaurant_id, user_id, date_time, local_date)
 VALUES (1, 1, '2022-08-25T10:59:59.735+00:00', '2022-08-25'),
        (2, 2, '2022-08-25T10:00:00.735+00:00', '2022-08-25'),
        (1, 1, '2022-08-24T09:53:43.735+00:00', '2022-08-24');

@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c1eed60e30544fda88f9224db420896e)](https://www.codacy.com/gh/gluhov-d/restaurant-voting-application/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gluhov-d/restaurant-voting-application&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c1eed60e30544fda88f9224db420896e)](https://www.codacy.com/gh/gluhov-d/restaurant-userVote-application/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gluhov-d/restaurant-userVote-application&amp;utm_campaign=Badge_Grade)
 
 Restaurant voting application
 ===============================
@@ -7,6 +7,7 @@ Most popular technologies / tools /frameworks Java Enterprise:
 Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)
 
 Download executable application https://disk.yandex.ru/d/47Z4TF4uvZTVYw
+
 To test application use swagger at http://localhost:8080/swagger-ui/index.html
 
 ##  Technical requirement:

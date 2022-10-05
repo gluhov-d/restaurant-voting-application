@@ -3,7 +3,9 @@ package com.github.restaurantvoting.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.restaurantvoting.HasIdAndEmail;
+import com.github.restaurantvoting.util.DateTimeUtil;
 import com.github.restaurantvoting.util.validation.NoHtml;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +21,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -67,7 +69,7 @@ public class User extends BaseEntity implements HasIdAndEmail, Serializable {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date registered = new Date();
+    private LocalDateTime registered = LocalDateTime.now(DateTimeUtil.getClock());
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role",
@@ -83,17 +85,18 @@ public class User extends BaseEntity implements HasIdAndEmail, Serializable {
     @OrderBy("dateTime DESC")
     @JsonManagedReference(value = "user-votes") // https://stackoverflow.com/a/20271621/2161414
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
-    private Set<Voting> votes;
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private Set<UserVote> votes;
 
     public User(User u) {
         this(u.id, u.firstName, u.lastName, u.email, u.password, u.enabled, u.registered, u.roles);
     }
 
     public User(Integer id, String firstName, String lastName, String email, String password, Role role, Role... roles) {
-        this(id, firstName, lastName, email, password, true, new Date(), EnumSet.of(role, roles));
+        this(id, firstName, lastName, email, password, true, LocalDateTime.now(DateTimeUtil.getClock()), EnumSet.of(role, roles));
     }
 
-    public User(Integer id, String firstName, String lastName, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
+    public User(Integer id, String firstName, String lastName, String email, String password, boolean enabled, LocalDateTime registered, Collection<Role> roles) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
