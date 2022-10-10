@@ -4,6 +4,7 @@ import com.github.restaurantvoting.model.UserVote;
 import com.github.restaurantvoting.repository.UserVoteRepository;
 import com.github.restaurantvoting.service.UserVoteService;
 import com.github.restaurantvoting.to.UserVoteTo;
+import com.github.restaurantvoting.util.UserVoteUtil;
 import com.github.restaurantvoting.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.github.restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
+import static com.github.restaurantvoting.util.validation.ValidationUtil.checkNew;
 import static com.github.restaurantvoting.web.voting.UserVoteController.REST_URL;
 
 @RestController
@@ -54,24 +55,24 @@ public class UserVoteController {
         return repository.getAllByUser(userId);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody UserVoteTo userVoteTo, @PathVariable int id) {
+    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody UserVoteTo userVoteTo) {
         int userId = authUser.id();
-        log.info("update vote {}", id);
-        assureIdConsistent(userVoteTo, id);
-        service.save(userId, userVoteTo);
+        log.info("update vote for user {}", userId);
+        service.update(userId, userVoteTo);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserVote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody UserVoteTo userVoteTo) {
+    public ResponseEntity<UserVoteTo> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody UserVoteTo userVoteTo) {
         int userId = authUser.id();
         log.info("user {} vote for restaurant {}", userId, userVoteTo.getRestaurantId());
+        checkNew(userVoteTo);
         UserVote userVote = service.save(userId, userVoteTo);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(userVote.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(userVote);
+        return ResponseEntity.created(uriOfNewResource).body(UserVoteUtil.createTo(userVote));
     }
 }

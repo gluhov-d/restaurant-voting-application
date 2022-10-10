@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.github.restaurantvoting.util.validation.ValidationUtil.checkVotingTime;
 
@@ -24,16 +23,17 @@ public class UserVoteService {
 
     @Transactional
     public UserVote save(int userId, UserVoteTo userVoteTo) {
-        LocalDateTime votingDateTime = LocalDateTime.now(DateTimeUtil.getClock());
-        UserVote userVote = new UserVote(null, userRepository.getById(userId), restaurantRepository.checkVotingRestaurant(userVoteTo.getRestaurantId()), votingDateTime);
-        Optional<UserVote> updatedVoting = userVoteRepository.getByDate(userId, votingDateTime.toLocalDate());
-        if (updatedVoting.isPresent()) {
-            userVoteRepository.checkBelong(updatedVoting.get().id(), userId);
-            checkVotingTime(votingDateTime.toLocalTime());
-            userVote.setId(updatedVoting.get().id());
-        }
+        UserVote userVote = new UserVote(null, userRepository.getById(userId), restaurantRepository.checkVotingRestaurant(userVoteTo.getRestaurantId()));
         return userVoteRepository.save(userVote);
+    }
 
-
+    @Transactional
+    public UserVote update(int userId, UserVoteTo userVoteTo) {
+        LocalDateTime votingDateTime = LocalDateTime.now(DateTimeUtil.getClock());
+        UserVote userVote = userVoteRepository.checkExistence(userId, votingDateTime.toLocalDate());
+        checkVotingTime(votingDateTime.toLocalTime());
+        userVote.setRestaurant(restaurantRepository.checkVotingRestaurant(userVoteTo.getRestaurantId()));
+        userVote.setDateTime(votingDateTime);
+        return userVoteRepository.save(userVote);
     }
 }

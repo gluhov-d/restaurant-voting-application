@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -50,18 +51,14 @@ public class DishController {
         repository.delete(dish);
     }
 
-    @GetMapping(REST_URL + "/{restaurantId}/dishes/{id}/with-restaurant")
-    public ResponseEntity<Dish> getWithRestaurant(@PathVariable int restaurantId, @PathVariable int id) {
-        log.info("get dish {} with restaurant {}", id, restaurantId);
-        return ResponseEntity.of(repository.getWithRestaurant(id, restaurantId));
-    }
-
     @PutMapping(value = ADMIN_REST_URL + "/{restaurantId}/dishes/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Dish dish, @PathVariable int restaurantId, @PathVariable int id) {
+    @Transactional
+    public void update(@Valid @RequestBody DishTo dishTo, @PathVariable int restaurantId, @PathVariable int id) {
         log.info("update dish {} for restaurant {}", id, restaurantId);
-        assureIdConsistent(dish, id);
-        service.save(dish, restaurantId);
+        assureIdConsistent(dishTo, id);
+        Dish updated = repository.checkBelong(dishTo.id(), restaurantId);
+        service.save(DishUtil.updateFromTo(updated, dishTo), restaurantId);
     }
 
     @PostMapping(value = ADMIN_REST_URL + "/{restaurantId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE)

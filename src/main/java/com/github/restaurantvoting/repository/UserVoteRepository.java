@@ -12,17 +12,17 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface UserVoteRepository extends BaseRepository<UserVote> {
 
-    @Query("SELECT v FROM UserVote v WHERE v.id = :id AND v.user.id = :userId")
+    @Query("SELECT v FROM UserVote v JOIN FETCH v.restaurant WHERE v.id = :id AND v.user.id = :userId")
     Optional<UserVote> get(int id, int userId);
 
-    @Query("SELECT v FROM  UserVote v WHERE v.user.id = :userId")
+    @Query("SELECT v FROM UserVote v JOIN FETCH v.restaurant WHERE v.user.id = :userId")
     List<UserVote> getAllByUser(int userId);
 
-    @Query("SELECT v FROM UserVote  v WHERE v.localDate = :localDate AND v.user.id = :userId")
+    @Query("SELECT v FROM UserVote v JOIN FETCH v.restaurant WHERE v.localDate = :localDate AND v.user.id = :userId")
     Optional<UserVote> getByDate(int userId, LocalDate localDate);
 
-    default UserVote checkBelong(int id, int userId) {
-        return get(id, userId).orElseThrow(
-                () -> new DataConflictException("Voting id=" + id + " doesn't belong to user id=" + userId));
+    default UserVote checkExistence(int userId, LocalDate localDate) {
+        return getByDate(userId, localDate).orElseThrow(
+                () -> new DataConflictException("Can't update voting that doesn't exist"));
     }
 }

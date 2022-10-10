@@ -2,6 +2,7 @@ package com.github.restaurantvoting.web.restaurant;
 
 import com.github.restaurantvoting.model.Restaurant;
 import com.github.restaurantvoting.repository.RestaurantRepository;
+import com.github.restaurantvoting.util.DateTimeUtil;
 import com.github.restaurantvoting.util.JsonUtil;
 import com.github.restaurantvoting.util.RestaurantUtil;
 import com.github.restaurantvoting.web.AbstractControllerTest;
@@ -14,14 +15,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.ZoneId;
 
 import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.*;
 import static com.github.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
 import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,9 +98,10 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getAllWithDishesByDate() throws Exception {
-        LocalDate dishDate = LocalDate.of(2022, Month.AUGUST, 25);
-        perform(MockMvcRequestBuilders.get(REST_URL + "with-dishes-by-date")
-                .param("dishDate", dishDate.toString()))
+        LocalDate dishDate = LocalDate.now().minusDays(1);
+        Clock clock = Clock.fixed(Instant.parse(dishDate + "T10:59:30.00Z"), ZoneId.of("UTC"));
+        DateTimeUtil.setClock(clock);
+        perform(MockMvcRequestBuilders.get(REST_URL + "with-dishes"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -133,6 +136,17 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
+    void createDuplicate() throws Exception {
+        Restaurant invalid = new Restaurant(null, mirazurRestaurant.getName());
+        perform(MockMvcRequestBuilders.post(ADMIN_REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + MIRAZUR_RESTAURANT_ID)
@@ -157,12 +171,12 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
-    void updateDuplicate() {
+    void updateDuplicate() throws Exception {
         Restaurant invalid = new Restaurant(MIRAZUR_RESTAURANT_ID, nomaRestaurant.getName());
-        assertThrows(Exception.class, () ->
-                perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + MIRAZUR_RESTAURANT_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(invalid)))
-                        .andDo(print()));
+        perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + MIRAZUR_RESTAURANT_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

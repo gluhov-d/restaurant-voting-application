@@ -3,6 +3,7 @@ package com.github.restaurantvoting.web.restaurant;
 import com.github.restaurantvoting.model.Restaurant;
 import com.github.restaurantvoting.repository.RestaurantRepository;
 import com.github.restaurantvoting.to.RestaurantTo;
+import com.github.restaurantvoting.util.DateTimeUtil;
 import com.github.restaurantvoting.util.RestaurantUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +11,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -58,9 +57,11 @@ public class RestaurantController {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 
-    @GetMapping(REST_URL + "/with-dishes-by-date")
-    public List<RestaurantTo> getAllWithDishesByDate(@RequestParam @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dishDate) {
-        log.info("get all restaurants with dishes by date {}", dishDate);
+    @GetMapping(REST_URL + "/with-dishes")
+    @Cacheable
+    public List<RestaurantTo> getAllWithDishesByDate() {
+        LocalDate dishDate = LocalDate.now(DateTimeUtil.getClock());
+        log.info("get all restaurants with dishes by date: {}", dishDate);
         return RestaurantUtil.getFilteredTosByDate(repository.getAllWithDishes(), dishDate);
     }
 

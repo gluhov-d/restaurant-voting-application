@@ -16,11 +16,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 
 import static com.github.restaurantvoting.util.validation.ValidationUtil.EXCEPTION_VOTING_CLOSED;
 import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.MIRAZUR_RESTAURANT_ID;
 import static com.github.restaurantvoting.web.restaurant.RestaurantTestData.NOMA_RESTAURANT_ID;
+import static com.github.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
 import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static com.github.restaurantvoting.web.voting.UserVoteTestData.*;
 import static org.hamcrest.Matchers.containsString;
@@ -48,7 +50,7 @@ class UserVoteControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void getByDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "by-date")
-                .param("votingDate", "2022-08-25"))
+                .param("votingDate", LocalDate.now().minusDays(1).toString()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -80,7 +82,7 @@ class UserVoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = USER_MAIL)
+    @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
         UserVoteTo newTo = new UserVoteTo(null, MIRAZUR_RESTAURANT_ID);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -95,26 +97,37 @@ class UserVoteControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = USER_MAIL)
+    void createDuplicate() throws Exception {
+        UserVoteTo newTo = new UserVoteTo(null, MIRAZUR_RESTAURANT_ID);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
         UserVoteTo updatedTo = new UserVoteTo(null, NOMA_RESTAURANT_ID);
-        Clock clock = Clock.fixed(Instant.parse("2022-08-25T10:59:30.00Z"), ZoneId.of("UTC"));
+        Clock clock = Clock.fixed(Instant.parse(LocalDate.now(DateTimeUtil.getClock()) + "T10:59:30.00Z"), ZoneId.of("UTC"));
         DateTimeUtil.setClock(clock);
-        perform(MockMvcRequestBuilders.put(REST_URL + VOTE_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        Assertions.assertEquals(repository.getById(VOTE_ID).getRestaurant().id(), updatedTo.getRestaurantId());
+        Assertions.assertEquals(repository.getById(userVoting2.id()).getRestaurant().id(), updatedTo.getRestaurantId());
     }
 
     @Test
     @WithUserDetails(value = USER_MAIL)
     void updateWhenIsClosed() throws Exception {
         UserVoteTo updatedTo = new UserVoteTo(null, NOMA_RESTAURANT_ID);
-        Clock clock = Clock.fixed(Instant.parse("2022-08-25T12:15:30.00Z"), ZoneId.of("UTC"));
+        Clock clock = Clock.fixed(Instant.parse(LocalDate.now(DateTimeUtil.getClock()) + "T12:15:30.00Z"), ZoneId.of("UTC"));
         DateTimeUtil.setClock(clock);
-        perform(MockMvcRequestBuilders.put(REST_URL + VOTE_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())

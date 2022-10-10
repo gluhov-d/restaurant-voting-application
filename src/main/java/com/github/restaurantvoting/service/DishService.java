@@ -15,9 +15,6 @@ public class DishService {
 
     @Transactional
     public Dish save(Dish dish, int restaurantId) {
-        if (dish.getId() != null) {
-            dishRepository.checkBelong(dish.id(), restaurantId);
-        }
         dish.setRestaurant(restaurantRepository.getById(restaurantId));
         return dishRepository.save(dish);
     }

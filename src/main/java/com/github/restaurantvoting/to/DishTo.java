@@ -3,6 +3,7 @@ package com.github.restaurantvoting.to;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 public class DishTo extends NamedTo {
 
+    @Min(value = 1)
     int price;
 
     @NotNull

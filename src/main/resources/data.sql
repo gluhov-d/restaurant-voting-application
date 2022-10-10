@@ -12,20 +12,20 @@ VALUES ('Mirazur'),
        ('Noma');
 
 INSERT INTO DISH (local_date, name, price, restaurant_id)
-VALUES ('2022-08-25', 'Goose', 25000, 1),
-       ('2022-08-25', 'Beef', 20000, 1),
-       ('2022-08-25', 'Frankfurters', 15000, 1),
-       ('2022-08-25', 'Tuna', 35000, 2),
-       ('2022-08-25', 'Lobster', 40000, 2),
-       ('2022-08-25', 'Carp', 43000, 2),
-       ('2022-08-26', 'Tuna', 35000, 1),
-       ('2022-08-26', 'Lobster', 40000, 1),
-       ('2022-08-26', 'Carp', 43000, 1),
-       ('2022-08-26', 'Goose', 25000, 2),
-       ('2022-08-26', 'Beef', 20000, 2),
-       ('2022-08-26', 'Frankfurters', 15000, 2);
+VALUES (CURRENT_DATE - 1, 'Goose', 25000, 1),
+       (CURRENT_DATE - 1, 'Beef', 20000, 1),
+       (CURRENT_DATE - 1, 'Frankfurters', 15000, 1),
+       (CURRENT_DATE - 1, 'Tuna', 35000, 2),
+       (CURRENT_DATE - 1, 'Lobster', 40000, 2),
+       (CURRENT_DATE - 1, 'Carp', 43000, 2),
+       (CURRENT_DATE, 'Tuna', 35000, 1),
+       (CURRENT_DATE, 'Lobster', 40000, 1),
+       (CURRENT_DATE, 'Carp', 43000, 1),
+       (CURRENT_DATE, 'Goose', 25000, 2),
+       (CURRENT_DATE, 'Beef', 20000, 2),
+       (CURRENT_DATE, 'Frankfurters', 15000, 2);
 
 INSERT INTO USER_VOTE (restaurant_id, user_id, date_time, local_date)
-VALUES (1, 1, '2022-08-25T10:59:59.735+00:00', '2022-08-25'),
-       (2, 2, '2022-08-25T10:00:00.735+00:00', '2022-08-25'),
-       (1, 1, '2022-08-24T09:53:43.735+00:00', '2022-08-24');
+VALUES (1, 1, CURRENT_DATE - 1 + TIME '10:00:00', CURRENT_DATE - 1),
+       (2, 2, CURRENT_DATE - 1 + TIME '9:53:43', CURRENT_DATE - 1),
+       (1, 1, CURRENT_DATE + TIME '13:01:59', CURRENT_DATE);

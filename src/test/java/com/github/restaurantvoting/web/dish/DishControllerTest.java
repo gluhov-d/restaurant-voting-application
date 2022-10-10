@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.Month;
 
 import static com.github.restaurantvoting.web.dish.DishTestData.*;
@@ -22,7 +23,6 @@ import static com.github.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
 import static com.github.restaurantvoting.web.user.UserTestData.USER_MAIL;
 import static java.time.LocalDate.of;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,13 +70,13 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
-        Dish updatedDish = getUpdated();
+        DishTo updatedDishTo = getUpdatedTo();
         perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updatedDish)))
+                .content(JsonUtil.writeValue(updatedDishTo)))
                 .andExpect(status().isNoContent());
 
-        DISH_MATCHER.assertMatch(repository.getById(DISH_ID), updatedDish);
+        DISH_MATCHER.assertMatch(repository.getById(DISH_ID), DishUtil.updateFromTo(new Dish(mirazurDish1), updatedDishTo));
     }
 
     @Test
@@ -99,8 +99,8 @@ class DishControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void getBetween() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDate", "2022-08-25")
-                .param("endDate", "2022-08-25"))
+                .param("startDate", LocalDate.now().minusDays(1).toString())
+                .param("endDate", LocalDate.now().minusDays(1).toString()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(DISH_MATCHER.contentJson(dishesForOneDay));
@@ -113,15 +113,6 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(DISH_MATCHER.contentJson(allDishesMirazurRestaurant));
-    }
-
-    @Test
-    @WithUserDetails(value = USER_MAIL)
-    void getWithRestaurant() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + DISH_ID + "/with-restaurant"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(DISH_WITH_RESTAURANT_MATCHER.contentJson(mirazurDish1));
     }
 
     @Test
@@ -138,10 +129,10 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void updateInvalid() throws Exception {
-        Dish invalid = new Dish(DISH_ID, null, null, 5000);
+        DishTo invalidTo = new DishTo(DISH_ID, null, null, 5000);
         perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalid)))
+                .content(JsonUtil.writeValue(invalidTo)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -150,10 +141,10 @@ class DishControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void updateHtmlUnsafe() throws Exception {
-        Dish invalid = new Dish(DISH_ID, "<script>alert(777)</script>>", mirazurDish2.getLocalDate(), 500);
+        DishTo invalidTo = new DishTo(DISH_ID, "<script>alert(777)</script>>", mirazurDish2.getLocalDate(), 500);
         perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalid)))
+                .content(JsonUtil.writeValue(invalidTo)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -161,12 +152,12 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
-    void updateDuplicate() {
-        Dish invalid = new Dish(DISH_ID, "Beef", mirazurDish2.getLocalDate(), 100);
-        assertThrows(Exception.class, () ->
-                perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + DISH_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(invalid)))
-                        .andDo(print()));
+    void updateDuplicate() throws Exception {
+        DishTo invalidTo = new DishTo(DISH_ID, "Beef", mirazurDish2.getLocalDate(), 100);
+        perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + DISH_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalidTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 }

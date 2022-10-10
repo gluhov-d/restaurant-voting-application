@@ -18,6 +18,13 @@ public class DishUtil {
         return new Dish(null, dishTo.getName(), dishTo.getLocalDate(), dishTo.getPrice());
     }
 
+    public static Dish updateFromTo(Dish dish, DishTo dishTo) {
+        dish.setName(dishTo.getName());
+        dish.setPrice(dishTo.getPrice());
+        dish.setLocalDate(dishTo.getLocalDate());
+        return dish;
+    }
+
     public static DishTo createTo(Dish dish) {
         return new DishTo(dish.getId(), dish.getName(), dish.getLocalDate(), dish.getPrice());
     }
